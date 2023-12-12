@@ -1,12 +1,14 @@
 // ==UserScript==
-// @name         Userscript starter
+// @name         Jira Copy Fix Version
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  Creates a new userscript
+// @description  Allows to copy fix version link
 // @author       Łukasz Brzózko
-// @match        https://github.com/
-// @icon         https://github.githubassets.com/favicons/favicon.png
-// @updateURL    https://raw.githubusercontent.com/lukasz-brzozko/userscript-starter/main/dist/index.meta.js
-// @downloadURL  https://raw.githubusercontent.com/lukasz-brzozko/userscript-starter/main/dist/index.user.js
-// @grant        none
+// @match        https://jira.nd0.pl/*
+// @exclude      https://jira.nd0.pl/plugins/servlet/*
+// @icon         https://jira.nd0.pl/s/a3v501/940003/1dlckms/_/images/fav-jsw.png
+// @resource styles    https://raw.githubusercontent.com/lukasz-brzozko/jira-copy-fix-version/main/dist/styles.css
+// @updateURL    https://raw.githubusercontent.com/lukasz-brzozko/jira-copy-fix-version/main/dist/index.meta.js
+// @downloadURL  https://raw.githubusercontent.com/lukasz-brzozko/jira-copy-fix-version/main/dist/index.user.js
+// @grant        GM_getResourceText
 // ==/UserScript==
