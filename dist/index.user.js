@@ -5,7 +5,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 // ==UserScript==
 // @name         Jira Copy Fix Version
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Allows to copy fix version link
 // @author       Łukasz Brzózko
 // @match        https://jira.nd0.pl/*
@@ -21,8 +21,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     linkContainer: "#fixVersions-field",
     infoMessage: ".my-message-copied-info"
   };
-  var MAX_ATTEMPTS = 5;
-  var attempts = 0;
   var linkStyles = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
       var myCss, styleTag;
@@ -92,23 +90,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   var handleContextMenu = function handleContextMenu(e) {
     var clientX = e.clientX,
       clientY = e.clientY;
-    var linkEl = document.elementFromPoint(clientX, clientY);
-    if (!linkEl.search) return;
+    var clickedEl = document.elementFromPoint(clientX, clientY);
+    if (clickedEl.nodeName !== "A") return;
+    if (!clickedEl.closest(SELECTORS.linkContainer)) return;
     e.preventDefault();
-    copyLinkIntoClipboard(linkEl);
+    copyLinkIntoClipboard(clickedEl);
   };
   var init = function init() {
-    var linkContainer = document.querySelector(SELECTORS.linkContainer);
-    if (linkContainer) {
-      linkStyles();
-      generateMessage();
-      linkContainer.addEventListener("contextmenu", handleContextMenu);
-    } else if (attempts === MAX_ATTEMPTS) {
-      return console.error("Brak kontenera fix version.");
-    } else {
-      attempts++;
-      setTimeout(init, 1000);
-    }
+    linkStyles();
+    generateMessage();
+    document.addEventListener("contextmenu", handleContextMenu);
   };
   init();
 })();
