@@ -1,6 +1,7 @@
 (function () {
   const SELECTORS = {
     linkContainer: "#fixVersions-field",
+    versionTableContainer: "#versions-table",
     infoMessage: ".my-message-copied-info",
   };
 
@@ -12,11 +13,13 @@
     document.body.prepend(styleTag);
   };
 
-  const createClipBoardItem = ({ href, textContent }) => {
+  const createClipBoardItem = ({ href, textContent }, textOnly) => {
     const clipboardItem = new ClipboardItem({
       "text/plain": new Blob([textContent], { type: "text/plain" }),
-      "text/html": new Blob([`<a href="${href}">${textContent}</a>`], {
-        type: "text/html",
+      ...(!textOnly && {
+        "text/html": new Blob([`<a href="${href}">${textContent}</a>`], {
+          type: "text/html",
+        }),
       }),
     });
 
@@ -38,8 +41,8 @@
     info.classList.add("active");
   };
 
-  const copyLinkIntoClipboard = async (link) => {
-    const clipboardItem = createClipBoardItem(link);
+  const copyLinkIntoClipboard = async (link, textOnly = false) => {
+    const clipboardItem = createClipBoardItem(link, textOnly);
 
     await navigator.clipboard.write([clipboardItem]);
 
@@ -47,14 +50,16 @@
   };
 
   const handleContextMenu = (e) => {
-    const { clientX, clientY } = e;
-    const clickedEl = document.elementFromPoint(clientX, clientY);
+    const { target } = e;
+    const isStandardFixVersion = target.closest(SELECTORS.linkContainer);
+    const isTableFixVersion = target.closest(SELECTORS.versionTableContainer);
+    const isFixVersion = isStandardFixVersion || isTableFixVersion;
+    const shouldCopyLink = target.nodeName === "A" && isFixVersion;
 
-    if (clickedEl.nodeName !== "A") return;
-    if (!clickedEl.closest(SELECTORS.linkContainer)) return;
+    if (!shouldCopyLink) return;
 
     e.preventDefault();
-    copyLinkIntoClipboard(clickedEl);
+    copyLinkIntoClipboard(target, isTableFixVersion);
   };
 
   const init = () => {
