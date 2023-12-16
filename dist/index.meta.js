@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Jira Copy Fix Version
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Allows to copy fix version link
 // @author       Łukasz Brzózko
 // @match        https://jira.nd0.pl/*
