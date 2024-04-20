@@ -15,7 +15,7 @@
 
   const createClipBoardItem = ({ href, textContent }, textOnly) => {
     const clipboardItem = new ClipboardItem({
-      "text/plain": new Blob([textContent], { type: "text/plain" }),
+      "text/plain": new Blob([href], { type: "text/plain" }),
       ...(!textOnly && {
         "text/html": new Blob([`<a href="${href}">${textContent}</a>`], {
           type: "text/html",

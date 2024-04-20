@@ -10,7 +10,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 // ==UserScript==
 // @name         Jira Copy Fix Version
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.3.1
 // @description  Allows to copy fix version link
 // @author       Łukasz Brzózko
 // @match        https://jira.nd0.pl/*
@@ -51,7 +51,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var href = _ref2.href,
       textContent = _ref2.textContent;
     var clipboardItem = new ClipboardItem(_objectSpread({
-      "text/plain": new Blob([textContent], {
+      "text/plain": new Blob([href], {
         type: "text/plain"
       })
     }, !textOnly && {
