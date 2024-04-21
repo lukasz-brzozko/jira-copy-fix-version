@@ -10,7 +10,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 // ==UserScript==
 // @name         Jira Copy Fix Version
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  Allows to copy fix version link
 // @author       Łukasz Brzózko
 // @match        https://jira.nd0.pl/*
@@ -47,15 +47,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return _ref.apply(this, arguments);
     };
   }();
+  var getFilterUrl = function getFilterUrl(fixVersion) {
+    var FrontPortalRegex = /^FrontPortal-/;
+    var filterUrl = new URL("https://jira.nd0.pl/issues/");
+    var isFrontPortal = FrontPortalRegex.test(fixVersion);
+    var fixVersionFilter = "fixVersion in (".concat(fixVersion, ")");
+    var commentFilter = "(comment ~ \"".concat(fixVersion, "\")");
+    var filter = isFrontPortal ? "".concat(fixVersionFilter, " OR ").concat(commentFilter) : fixVersionFilter;
+    filterUrl.searchParams.set("jql", filter);
+    return filterUrl.toString();
+  };
   var createClipBoardItem = function createClipBoardItem(_ref2, textOnly) {
-    var href = _ref2.href,
-      textContent = _ref2.textContent;
+    var textContent = _ref2.textContent;
+    var filterUrl = getFilterUrl(textContent);
     var clipboardItem = new ClipboardItem(_objectSpread({
       "text/plain": new Blob([textContent], {
         type: "text/plain"
       })
     }, !textOnly && {
-      "text/html": new Blob(["<a href=\"".concat(href, "\">").concat(textContent, "</a>")], {
+      "text/html": new Blob(["<a href=\"".concat(filterUrl, "\">").concat(textContent, "</a>")], {
         type: "text/html"
       })
     }));
@@ -105,7 +115,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var shouldCopyLink = target.nodeName === "A" && isFixVersion;
     if (!shouldCopyLink) return;
     e.preventDefault();
-    copyLinkIntoClipboard(target, isTableFixVersion);
+    copyLinkIntoClipboard(target);
   };
   var init = function init() {
     linkStyles();

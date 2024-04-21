@@ -13,11 +13,29 @@
     document.body.prepend(styleTag);
   };
 
-  const createClipBoardItem = ({ href, textContent }, textOnly) => {
+  const getFilterUrl = (fixVersion) => {
+    const FrontPortalRegex = /^FrontPortal-/;
+    const filterUrl = new URL("https://jira.nd0.pl/issues/");
+
+    const isFrontPortal = FrontPortalRegex.test(fixVersion);
+    const fixVersionFilter = `fixVersion in (${fixVersion})`;
+    const commentFilter = `(comment ~ "${fixVersion}")`;
+
+    const filter = isFrontPortal
+      ? `${fixVersionFilter} OR ${commentFilter}`
+      : fixVersionFilter;
+    filterUrl.searchParams.set("jql", filter);
+
+    return filterUrl.toString();
+  };
+
+  const createClipBoardItem = ({ textContent }, textOnly) => {
+    const filterUrl = getFilterUrl(textContent);
+
     const clipboardItem = new ClipboardItem({
       "text/plain": new Blob([textContent], { type: "text/plain" }),
       ...(!textOnly && {
-        "text/html": new Blob([`<a href="${href}">${textContent}</a>`], {
+        "text/html": new Blob([`<a href="${filterUrl}">${textContent}</a>`], {
           type: "text/html",
         }),
       }),
@@ -59,7 +77,7 @@
     if (!shouldCopyLink) return;
 
     e.preventDefault();
-    copyLinkIntoClipboard(target, isTableFixVersion);
+    copyLinkIntoClipboard(target);
   };
 
   const init = () => {
