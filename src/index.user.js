@@ -20,10 +20,11 @@
     const isFrontPortal = FrontPortalRegex.test(fixVersion);
     const fixVersionFilter = `fixVersion in (${fixVersion})`;
     const commentFilter = `(comment ~ "${fixVersion}")`;
+    const orderFilter = `ORDER BY project ASC`;
 
     const filter = isFrontPortal
-      ? `${fixVersionFilter} OR ${commentFilter}`
-      : fixVersionFilter;
+      ? `(${fixVersionFilter} OR ${commentFilter}) ${orderFilter}`
+      : `(${fixVersionFilter}) ${orderFilter}`;
     filterUrl.searchParams.set("jql", filter);
 
     return filterUrl.toString();
