@@ -10,7 +10,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 // ==UserScript==
 // @name         Jira Copy Fix Version
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  Allows to copy fix version link
 // @author       Łukasz Brzózko
 // @match        https://jira.nd0.pl/*
@@ -21,6 +21,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 // @downloadURL  https://raw.githubusercontent.com/lukasz-brzozko/jira-copy-fix-version/main/dist/index.user.js
 // @grant        GM_getResourceText
 // ==/UserScript==
+
 (function () {
   var SELECTORS = {
     linkContainer: "#fixVersions-field",
@@ -53,7 +54,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var isFrontPortal = FrontPortalRegex.test(fixVersion);
     var fixVersionFilter = "fixVersion in (".concat(fixVersion, ")");
     var commentFilter = "(comment ~ \"".concat(fixVersion, "\")");
-    var orderFilter = "ORDER BY project ASC";
+    var orderFilter = "ORDER BY project ASC, type ASC";
     var filter = isFrontPortal ? "(".concat(fixVersionFilter, " OR ").concat(commentFilter, ") ").concat(orderFilter) : "(".concat(fixVersionFilter, ") ").concat(orderFilter);
     filterUrl.searchParams.set("jql", filter);
     return filterUrl.toString();
